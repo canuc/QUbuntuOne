@@ -29,10 +29,16 @@ CONFIG += qdeclarative-boostable
 # Add dependency to Symbian components
 # CONFIG += qt-components
 
-# The .cpp file which was generated for your project. Feel free to hack it.
-SOURCES += main.cpp \
+SOURCES += src/main.cpp \
     src/net/networkmanager.cpp \
-    src/net/requests/ubuntuonerequest.cpp
+    src/net/requests/ubuntuonerequest.cpp \
+    src/qjson/serializerrunnable.cpp \
+    src/qjson/serializer.cpp \
+    src/qjson/qobjecthelper.cpp \
+    src/qjson/parserrunnable.cpp \
+    src/qjson/parser.cpp \
+    src/qjson/json_scanner.cpp \
+    src/qjson/json_parser.cc
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
@@ -55,4 +61,17 @@ OTHER_FILES += \
 
 HEADERS += \
     src/net/networkmanager.h \
-    src/net/requests/ubuntuonerequest.h
+    src/net/requests/ubuntuonerequest.h \
+    src/qjson/stack.hh \
+    src/qjson/serializerrunnable.h \
+    src/qjson/serializer.h \
+    src/qjson/qobjecthelper.h \
+    src/qjson/qjson_export.h \
+    src/qjson/qjson_debug.h \
+    src/qjson/position.hh \
+    src/qjson/parserrunnable.h \
+    src/qjson/parser_p.h \
+    src/qjson/parser.h \
+    src/qjson/location.hh \
+    src/qjson/json_scanner.h \
+    src/qjson/json_parser.hh
