@@ -38,7 +38,10 @@ SOURCES += src/main.cpp \
     src/qjson/parserrunnable.cpp \
     src/qjson/parser.cpp \
     src/qjson/json_scanner.cpp \
-    src/qjson/json_parser.cc
+    src/qjson/json_parser.cc \
+    src/net/exception/qexception.cpp \
+    src/net/qubuntuonepostrequest.cpp \
+    src/net/exception/invalidrequesttype.cpp
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
@@ -74,4 +77,7 @@ HEADERS += \
     src/qjson/parser.h \
     src/qjson/location.hh \
     src/qjson/json_scanner.h \
-    src/qjson/json_parser.hh
+    src/qjson/json_parser.hh \
+    src/net/exception/qexception.h \
+    src/net/qubuntuonepostrequest.h \
+    src/net/exception/invalidrequesttype.h
