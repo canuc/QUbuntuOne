@@ -80,6 +80,11 @@ namespace QUbuntuOne {
 
     protected:
         virtual QNetworkReply * request()=0;
+        /**
+         * This can be overriden to create the proper request
+         * @brief createRequest
+         * @return
+         */
         virtual QNetworkRequest * createRequest()=0;
         /**
          * @brief doPostRequest preform the post request and return the network reply object
@@ -119,11 +124,14 @@ namespace QUbuntuOne {
         QString getUrl() const;
         const int getMaxRetries() const;
 
-        void processError(QNetworkReply::NetworkError code,QNetworkReply * reply);
-        void progressUpdatedDownload(qint64 bytes,qint64 bytesTotal, QNetworkReply * reply);
-        void progressUpdatedUpload(qint64 bytes, qint64 bytesTotal, QNetworkReply * reply);
-        void requestFinnished(QNetworkReply * reply);
-        QNetworkReply * doRequest(QNetworkRequest * req);
+        virtual void processError(QNetworkReply::NetworkError code,QNetworkReply * reply);
+        virtual void progressUpdatedDownload(qint64 bytes,qint64 bytesTotal, QNetworkReply * reply);
+        virtual void progressUpdatedUpload(qint64 bytes, qint64 bytesTotal, QNetworkReply * reply);
+        virtual void requestFinnished(QNetworkReply * reply);
+
+        virtual QNetworkReply * doRequest(QNetworkRequest * req);
+
+        virtual void processResponseHeader(QNetworkReply * req);
     private:
         RequestType   _type;
         RequestStatus _status = RequestStatusIncomplete;

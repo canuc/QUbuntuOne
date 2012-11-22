@@ -136,3 +136,7 @@ QNetworkReply * UbuntuOneRequest::doRequest(QNetworkRequest * req)
  void UbuntuOneRequest::requestFinnished(QNetworkReply * reply) {
 
  }
+
+ void UbuntuOneRequest::processResponseHeader(QNetworkReply * req) {
+
+ }

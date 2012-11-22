@@ -41,7 +41,8 @@ SOURCES += src/main.cpp \
     src/qjson/json_parser.cc \
     src/net/exception/qexception.cpp \
     src/net/qubuntuonepostrequest.cpp \
-    src/net/exception/invalidrequesttype.cpp
+    src/net/exception/invalidrequesttype.cpp \
+    src/net/requests/cookiepersistantubuntuonerequest.cpp
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
@@ -80,4 +81,5 @@ HEADERS += \
     src/qjson/json_parser.hh \
     src/net/exception/qexception.h \
     src/net/qubuntuonepostrequest.h \
-    src/net/exception/invalidrequesttype.h
+    src/net/exception/invalidrequesttype.h \
+    src/net/requests/cookiepersistantubuntuonerequest.h
