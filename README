@@ -9,7 +9,7 @@ Tests
 
 To run tests:
 
-`qmake QT+=testlib QMAKE_CXXFLAGS=-DUBUNTU_CLOUD_TEST`
+`qmake QT+=testlib DEFINES+=UBUNTU_CLOUD_TEST`
 `make clean`
 `./UbuntuCloud`
 
