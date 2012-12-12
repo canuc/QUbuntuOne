@@ -21,5 +21,5 @@
 #ifndef TEST_H
 #define TEST_H
 
-//#define UBUNTU_CLOUD_TEST
+#define UBUNTU_CLOUD_TEST
 #endif // TEST_H

@@ -36,6 +36,8 @@
 
     private slots:
         void testSingleRequest();
+        void testRequestInvalidUrl();
+        void testRequestDownloadBytesSize();
     };
 
     #endif // ifdef UBUNTU_CLOUT_TEST

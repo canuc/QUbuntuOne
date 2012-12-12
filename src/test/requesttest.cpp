@@ -33,7 +33,7 @@ RequestTest::RequestTest(QObject *parent) :
 
 void RequestTest::testSingleRequest()
 {
-    QScopedPointer<UbuntuOneRequest> request(new UbuntuOneRequest("http://www.google.com",UbuntuOneRequest::RequestTypeGet,this));
+    QScopedPointer<UbuntuOneRequest> request(new        UbuntuOneRequest("http://www.google.com",UbuntuOneRequest::RequestTypeGet,this));
     request->run();
     QApplication::processEvents(QEventLoop::WaitForMoreEvents,2000);
     QApplication::sendPostedEvents();
@@ -43,6 +43,36 @@ void RequestTest::testSingleRequest()
 
     QCOMPARE(request->getRequestStatus(),UbuntuOneRequest::RequestStatusSucess);
 }
+
+void RequestTest::testRequestInvalidUrl()
+{
+    QScopedPointer<UbuntuOneRequest> request(new        UbuntuOneRequest("invalid.google.com",UbuntuOneRequest::RequestTypeGet,this));
+    request->run();
+    QApplication::processEvents(QEventLoop::WaitForMoreEvents,2000);
+    QApplication::sendPostedEvents();
+    sleep(1); // Sleep For a second
+    QApplication::processEvents(QEventLoop::WaitForMoreEvents,2000);
+    QApplication::sendPostedEvents();
+
+    QCOMPARE(request->getRequestStatus(),UbuntuOneRequest::RequestStatusError);
+}
+
+void RequestTest::testRequestDownloadBytesSize()
+{
+    QScopedPointer<UbuntuOneRequest> request(new        UbuntuOneRequest("http://raw.github.com/canuc/QUbuntuOne/master/src/main.cpp",UbuntuOneRequest::RequestTypeGet,this));
+
+    request->run();
+    QApplication::processEvents(QEventLoop::WaitForMoreEvents,2000);
+    QApplication::sendPostedEvents();
+    sleep(1); // Sleep For a second
+    QApplication::processEvents(QEventLoop::WaitForMoreEvents,2000);
+    QApplication::sendPostedEvents();
+
+    QCOMPARE(request->getRequestStatus(),UbuntuOneRequest::RequestStatusSucess);
+    QVERIFY(request->getBytes().size()> 0);
+}
+
+
 
 
 #endif

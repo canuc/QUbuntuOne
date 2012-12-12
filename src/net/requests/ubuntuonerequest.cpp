@@ -206,6 +206,8 @@ QNetworkReply * UbuntuOneRequest::doRequest(QNetworkRequest * req)
   */
  void UbuntuOneRequest::requestFinnished(QNetworkReply * reply) {
     setRequestStatus(RequestStatusSucess);
+
+    _data = reply->readAll();
  }
 
  void UbuntuOneRequest::processResponseHeader(QNetworkReply * req) {
@@ -296,4 +298,8 @@ QNetworkReply * UbuntuOneRequest::doRequest(QNetworkRequest * req)
  void UbuntuOneRequest::addRequestHeader(QNetworkRequest * req)
  {
     // No-op
+ }
+
+ const QByteArray & UbuntuOneRequest::getBytes() const  {
+    return _data;
  }

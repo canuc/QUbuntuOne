@@ -101,7 +101,12 @@ namespace QUbuntuOne {
          */
         void run ();
 
-
+         /*!
+          * get the byte data
+          * \brief get the request bytes
+          * \return the byte data
+          */
+          const QByteArray & getBytes() const;
     protected:
 
         /*!
@@ -210,6 +215,7 @@ namespace QUbuntuOne {
          * \param req the request to add headers to
          */
         virtual void addRequestHeader(QNetworkRequest * req);
+
     private:
         RequestType   _type;
         RequestStatus _status;
@@ -217,6 +223,7 @@ namespace QUbuntuOne {
         QString _url;
         QNetworkAccessManager * _networkAccessManager;
         int _currentRequest;
+        QByteArray _data;
 
     signals:
         void statusChanged(RequestStatus status);
