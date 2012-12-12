@@ -36,3 +36,8 @@ void JSONUbuntuOneRequest::processData(const QByteArray & bytes)
     _resultMap = parser.parse(bytes, &ok).toMap();
 }
 
+
+const QVariantMap & JSONUbuntuOneRequest::getJsonResult() const
+{
+    return _resultMap;
+}

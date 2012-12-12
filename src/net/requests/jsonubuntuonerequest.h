@@ -30,6 +30,7 @@ namespace QUbuntuOne {
     public:
         JSONUbuntuOneRequest(QString url,UbuntuOneRequest::RequestType type,QObject *parent = 0);
 
+        const QVariantMap & getJsonResult() const;
     protected:
         virtual void processData(const QByteArray & bytes);
 

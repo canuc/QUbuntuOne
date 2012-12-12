@@ -216,6 +216,7 @@ QNetworkReply * UbuntuOneRequest::doRequest(QNetworkRequest * req)
     setRequestStatus(RequestStatusSucess);
 
     _data = reply->readAll();
+    processData(_data);
  }
 
  void UbuntuOneRequest::processResponseHeader(QNetworkReply * req) {

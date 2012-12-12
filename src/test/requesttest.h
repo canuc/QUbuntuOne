@@ -38,6 +38,7 @@
         void testSingleRequest();
         void testRequestInvalidUrl();
         void testRequestDownloadBytesSize();
+        void testJSONRequest();
     };
 
     #endif // ifdef UBUNTU_CLOUT_TEST
