@@ -151,8 +151,8 @@ QNetworkReply * UbuntuOneRequest::doRequest(QNetworkRequest * req)
   */
  void UbuntuOneRequest::downloadProgress( qint64 bytesReceived, qint64 bytesTotal )
  {
-    UNUSED(bytesReceived);
-    UNUSED(bytesTotal);
+    Q_UNUSED(bytesReceived);
+    Q_UNUSED(bytesTotal);
     QNetworkReply * reply =  qobject_cast<QNetworkReply *>(sender());
     progressUpdatedDownload(bytesReceived,bytesTotal,reply);
  }
@@ -165,8 +165,8 @@ QNetworkReply * UbuntuOneRequest::doRequest(QNetworkRequest * req)
   */
  void UbuntuOneRequest::uploadProgress ( qint64 bytesSent, qint64 bytesTotal )
  {
-    UNUSED(bytesSent);
-    UNUSED(bytesTotal);
+    Q_UNUSED(bytesSent);
+    Q_UNUSED(bytesTotal);
     QNetworkReply * reply =  qobject_cast<QNetworkReply *>(sender());
     progressUpdatedUpload(bytesSent,bytesTotal,reply);
  }
@@ -186,8 +186,8 @@ QNetworkReply * UbuntuOneRequest::doRequest(QNetworkRequest * req)
   * Process an error response.
   */
  void UbuntuOneRequest::processError(QNetworkReply::NetworkError code,QNetworkReply * reply) {
-     UNUSED(code);
-     UNUSED(reply);
+     Q_UNUSED(code);
+     Q_UNUSED(reply);
      setRequestStatus(RequestStatusError);
  }
 
@@ -199,9 +199,9 @@ QNetworkReply * UbuntuOneRequest::doRequest(QNetworkRequest * req)
   * /param reply the associated network reply
   */
  void UbuntuOneRequest::progressUpdatedDownload(qint64 bytes,qint64 bytesTotal, QNetworkReply * reply) {
-     UNUSED(bytes);
-     UNUSED(bytesTotal);
-     UNUSED(reply);
+     Q_UNUSED(bytes);
+     Q_UNUSED(bytesTotal);
+     Q_UNUSED(reply);
  }
 
  /*!
@@ -212,9 +212,9 @@ QNetworkReply * UbuntuOneRequest::doRequest(QNetworkRequest * req)
   * \param reply
   */
  void UbuntuOneRequest::progressUpdatedUpload(qint64 bytes, qint64 bytesTotal, QNetworkReply * reply) {
-     UNUSED(bytes);
-     UNUSED(bytesTotal);
-     UNUSED(reply);
+     Q_UNUSED(bytes);
+     Q_UNUSED(bytesTotal);
+     Q_UNUSED(reply);
  }
 
  /*!
@@ -231,7 +231,7 @@ QNetworkReply * UbuntuOneRequest::doRequest(QNetworkRequest * req)
  }
 
  void UbuntuOneRequest::processResponseHeader(QNetworkReply * req) {
-     UNUSED(req);
+     Q_UNUSED(req);
     // no-op
  }
 
@@ -321,7 +321,7 @@ QNetworkReply * UbuntuOneRequest::doRequest(QNetworkRequest * req)
   */
  void UbuntuOneRequest::addRequestHeader(QNetworkRequest * req)
  {
-     UNUSED(req);
+     Q_UNUSED(req);
     // No-op
  }
 
@@ -330,6 +330,6 @@ QNetworkReply * UbuntuOneRequest::doRequest(QNetworkRequest * req)
  }
 
  void UbuntuOneRequest::processData(const QByteArray & bytes) {
-     UNUSED(bytes);
+     Q_UNUSED(bytes);
      // no-op
  }
