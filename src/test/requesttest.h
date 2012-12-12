@@ -18,28 +18,25 @@
  *  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef COOKIEPERSISTANTUBUNTUONEREQUEST_H
-#define COOKIEPERSISTANTUBUNTUONEREQUEST_H
+#include "test.h"
 
-#include <QHash>
-#include <QtNetwork/QNetworkReply>
-#include "ubuntuonerequest.h"
+#ifndef REQUESTTEST_H
+#define REQUESTTEST_H
 
-namespace QUbuntuOne {
-    class CookiePersistantUbuntuOneRequest : public UbuntuOneRequest
+    #ifdef UBUNTU_CLOUD_TEST
+    #include <QtTest/QTest>
+
+    class RequestTest : public QObject
     {
-    Q_OBJECT
-    private:
-        QHash<QString,QString> cookieKeyTable;
-
-    protected:
-        void processResponseHeader(QNetworkReply * req);
-
+        Q_OBJECT
     public:
-        CookiePersistantUbuntuOneRequest(QString url,RequestType type, QObject * parent = 0);
+        explicit RequestTest(QObject *parent = 0);
 
+    signals:
 
+    private slots:
+        void testSingleRequest();
     };
-}
 
-#endif // COOKIEPERSISTANTUBUNTUONEREQUEST_H
+    #endif // ifdef UBUNTU_CLOUT_TEST
+#endif  // REQUESTTEST_H

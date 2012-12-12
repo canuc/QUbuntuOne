@@ -18,28 +18,36 @@
  *  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef COOKIEPERSISTANTUBUNTUONEREQUEST_H
-#define COOKIEPERSISTANTUBUNTUONEREQUEST_H
+#ifndef TESTWRANGLER_H
+#define TESTWRANGLER_H
 
-#include <QHash>
-#include <QtNetwork/QNetworkReply>
-#include "ubuntuonerequest.h"
+#include <QObject>
+#include <QCoreApplication>
 
-namespace QUbuntuOne {
-    class CookiePersistantUbuntuOneRequest : public UbuntuOneRequest
-    {
+/*!
+ * This will pull together all the test classes. So that main will stay clean
+ *
+ * \brief The TestWrangler class
+ */
+class TestWrangler : public QObject
+{
     Q_OBJECT
-    private:
-        QHash<QString,QString> cookieKeyTable;
+private:
+    QList<QObject*> testList;//!< The lists of tests that should be run
 
-    protected:
-        void processResponseHeader(QNetworkReply * req);
+protected:
+    void addTest(QObject * testObject); //!< Add a test to the runtime,
+                                        //! should be called internally
 
-    public:
-        CookiePersistantUbuntuOneRequest(QString url,RequestType type, QObject * parent = 0);
+public:
+    explicit TestWrangler(QCoreApplication *parent = 0);
+    virtual ~TestWrangler();
 
+    void runTests();
+signals:
+    
+public slots:
+    
+};
 
-    };
-}
-
-#endif // COOKIEPERSISTANTUBUNTUONEREQUEST_H
+#endif // TESTWRANGLER_H

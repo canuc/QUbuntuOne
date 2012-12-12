@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include "requests/ubuntuonerequest.h"
+
 namespace QUbuntuOne {
     class QUbuntuOnePostRequest : public UbuntuOneRequest
     {

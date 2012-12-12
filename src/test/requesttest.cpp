@@ -18,28 +18,31 @@
  *  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef COOKIEPERSISTANTUBUNTUONEREQUEST_H
-#define COOKIEPERSISTANTUBUNTUONEREQUEST_H
+#include "requesttest.h"
+#ifdef UBUNTU_CLOUD_TEST
+#include "../net/requests/ubuntuonerequest.h"
+#include <QDebug>
+#include <QApplication>
+#include "unistd.h"
 
-#include <QHash>
-#include <QtNetwork/QNetworkReply>
-#include "ubuntuonerequest.h"
-
-namespace QUbuntuOne {
-    class CookiePersistantUbuntuOneRequest : public UbuntuOneRequest
-    {
-    Q_OBJECT
-    private:
-        QHash<QString,QString> cookieKeyTable;
-
-    protected:
-        void processResponseHeader(QNetworkReply * req);
-
-    public:
-        CookiePersistantUbuntuOneRequest(QString url,RequestType type, QObject * parent = 0);
-
-
-    };
+using namespace QUbuntuOne;
+RequestTest::RequestTest(QObject *parent) :
+    QObject(parent)
+{
 }
 
-#endif // COOKIEPERSISTANTUBUNTUONEREQUEST_H
+void RequestTest::testSingleRequest()
+{
+    QScopedPointer<UbuntuOneRequest> request(new UbuntuOneRequest("http://www.google.com",UbuntuOneRequest::RequestTypeGet,this));
+    request->run();
+    QApplication::processEvents(QEventLoop::WaitForMoreEvents,2000);
+    QApplication::sendPostedEvents();
+    sleep(1); // Sleep For a second
+    QApplication::processEvents(QEventLoop::WaitForMoreEvents,2000);
+    QApplication::sendPostedEvents();
+
+    QCOMPARE(request->getRequestStatus(),UbuntuOneRequest::RequestStatusSucess);
+}
+
+
+#endif

@@ -1,0 +1,35 @@
+QUbuntuOne
+=================================
+
+Open Source Ubuntu One client. Written in Qt/C++.
+
+
+Tests
+=================================
+
+To run tests:
+
+`qmake QT+=testlib QMAKE_CXXFLAGS=-DUBUNTU_CLOUD_TEST`
+`make clean`
+`./UbuntuCloud`
+
+Build
+=================================
+
+To build, simply run: 
+`qmake`
+`make`
+
+
+TODO: finnish up build and installation process
+
+WORK IN PROGRESS
+=================================
+
+This is currently a work in progress, and in a verry eary stage of development.
+
+LICENSE
+=====================================
+
+Please refer to COPYING, but this project is licensed under the LGPL.
+

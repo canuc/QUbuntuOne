@@ -1,3 +1,23 @@
+/**
+ * QUbuntuOne - UbuntuOne for symbian and Harmattan
+ *
+ * Author: Julian Haldenby (j.haldenby@gmail.com)
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  QUbuntuOne is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General
+ *  Public License along with QUbuntuOne.  If not, see
+ *  <http://www.gnu.org/licenses/>.
+ */
+
 #include "ubuntuonerequest.h"
 #include "../exception/qexception.h"
 #include <QMutexLocker>
@@ -6,11 +26,13 @@
 using namespace QUbuntuOne;
 
 UbuntuOneRequest::UbuntuOneRequest(QString url,UbuntuOneRequest::RequestType type,QObject *parent) :
-    QObject(parent)
+    QObject(parent),_type(type),_url(url),_status(RequestStatusIncomplete),_currentRequest(0)
 {
-    _type = type;
-    _url =url;
     _networkAccessManager = new QNetworkAccessManager(this);
+}
+
+UbuntuOneRequest::~UbuntuOneRequest()
+{
 }
 
 QString UbuntuOneRequest::getUrl() const {
@@ -36,9 +58,7 @@ bool UbuntuOneRequest::isCanceled() const {
 void UbuntuOneRequest::setRequestStatus(UbuntuOneRequest::RequestStatus status)
 {
     QMutexLocker locker(&_mutex);
-    if ( _status != UbuntuOneRequest::RequestStatusIncomplete ) {
-        throw new QException("Double setting the request status");
-    } else {
+    if ( _status == UbuntuOneRequest::RequestStatusIncomplete ) {
         _status = status;
         emit(status);
     }
@@ -50,7 +70,15 @@ void UbuntuOneRequest::run ()
     if ( _currentRequest < getMaxRetries()) {
         QNetworkRequest * req = createRequest();
 
+        // Do we have a request that we should attempt?
+        if ( req != NULL ) {
+            doRequest(req);
+        } else {
+            throw new QException("Error with setting the request status!");
+        }
 
+        // Increment the sequence number
+        _currentRequest++;
     }
 }
 
@@ -64,26 +92,29 @@ bool UbuntuOneRequest::autoDelete () const
     return true;
 }
 
-QNetworkRequest * UbuntuOneRequest::createRequest()
-{
-    return NULL;
-}
-
 QNetworkReply * UbuntuOneRequest::doRequest(QNetworkRequest * req)
 {
-    QNetworkReply * reply;
-    if ( getRequestType() == RequestTypeGet ) {
-        reply = doGetRequest(req);
-    } else if ( getRequestType() == RequestTypePost ) {
-        reply = doGetRequest(req);
-    } else if ( getRequestType() == RequestTypePut ) {
-        reply = doPutRequest(req);
-    } else if ( getRequestType() == RequestTypeDelete ) {
-        reply = doDeleteRequest(req);
+    QNetworkReply * reply = NULL;
+
+    switch (getRequestType()) {
+        case RequestTypeGet:
+             reply = doGetRequest(req);
+             break;
+        case RequestTypePost:
+              reply = doPostRequest(req);
+              break;
+        case RequestTypePut:
+              reply = doPutRequest(req);
+              break;
+        case RequestTypeDelete:
+             reply = doDeleteRequest(req);
+             break;
+        default:
+            throw new InvalidRequestType();
     }
 
     if ( reply != NULL ) {
-        /**
+        /*
          * connect all the slots and signals
          */
         connect(reply,SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(errorRecieved(QNetworkReply::NetworkError)));
@@ -93,6 +124,7 @@ QNetworkReply * UbuntuOneRequest::doRequest(QNetworkRequest * req)
     } else {
         throw new InvalidRequestType();
     }
+
     return reply;
 }
 
@@ -103,40 +135,165 @@ QNetworkReply * UbuntuOneRequest::doRequest(QNetworkRequest * req)
      processError(code,reply);
  }
 
+ /*!
+  * \brief UbuntuOneRequest::downloadProgress
+  * \param bytesReceived
+  * \param bytesTotal
+  */
  void UbuntuOneRequest::downloadProgress( qint64 bytesReceived, qint64 bytesTotal )
  {
     QNetworkReply * reply =  qobject_cast<QNetworkReply *>(sender());
     progressUpdatedDownload(bytesReceived,bytesTotal,reply);
  }
 
+ /*!
+  * Upload progress is complete.
+  *
+  * \param bytesSent the number of bytes sent
+  * \param bytesTotal the number of bytes in the request
+  */
  void UbuntuOneRequest::uploadProgress ( qint64 bytesSent, qint64 bytesTotal )
  {
     QNetworkReply * reply =  qobject_cast<QNetworkReply *>(sender());
     progressUpdatedUpload(bytesSent,bytesTotal,reply);
  }
 
+ /*!
+  * signal finnished emitted.
+  *
+  * \brief UbuntuOneRequest::finished the request for the current request has completed
+  */
  void UbuntuOneRequest::finished()
  {
     QNetworkReply * reply =  qobject_cast<QNetworkReply *>(sender());
     requestFinnished(reply);
  }
 
+ /*!
+  * Process an error response.
+  */
  void UbuntuOneRequest::processError(QNetworkReply::NetworkError code,QNetworkReply * reply) {
-
+     setRequestStatus(RequestStatusError);
  }
 
+ /*!
+  * Handle any progress update.
+  *
+  * /param bytes the number of bytes downloaded in this update
+  * /param bytesTotal the number of total bytes downloaded
+  * /param reply the associated network reply
+  */
  void UbuntuOneRequest::progressUpdatedDownload(qint64 bytes,qint64 bytesTotal, QNetworkReply * reply) {
 
  }
 
+ /*!
+  * Progress updated for an upload
+  * \brief UbuntuOneRequest::progressUpdatedUpload the progress is updated
+  * \param bytes the total number of bytes
+  * \param bytesTotal the number of bytes total for the upload
+  * \param reply
+  */
  void UbuntuOneRequest::progressUpdatedUpload(qint64 bytes, qint64 bytesTotal, QNetworkReply * reply) {
 
  }
 
+ /*!
+  * Can be overloaded to provide functionality when the request finnishes
+  *
+  * \brief UbuntuOneRequest::requestFinnished request finnishes
+  * \param reply the corresponding reply object for this
+  */
  void UbuntuOneRequest::requestFinnished(QNetworkReply * reply) {
-
+    setRequestStatus(RequestStatusSucess);
  }
 
  void UbuntuOneRequest::processResponseHeader(QNetworkReply * req) {
+    // no-op
+ }
 
+
+ /*!
+  * \brief doPostRequest preform the post request and return the network reply object
+  * \param req the request to post
+  * \see getMultipartData()
+  * \return reply object
+  */
+ QNetworkReply * UbuntuOneRequest::doPostRequest(QNetworkRequest * req) {
+     return _networkAccessManager->post(*req,getPostMultipartData());
+ }
+
+ /*!
+  * This will return the required mutlipart data only used in post methods
+  * \brief getMultipartData
+  * \return
+  */
+ QHttpMultiPart * UbuntuOneRequest::getPostMultipartData() {
+    return NULL;
+ }
+
+ /*!
+  * Do delete request
+  * \brief doDeleteRequest preform delete request
+  * \param req the request to preform the delete on
+  * \return delete reply
+  */
+ QNetworkReply * UbuntuOneRequest::doDeleteRequest(QNetworkRequest * req)
+ {
+     return _networkAccessManager->deleteResource(*req);
+ }
+
+ /*!
+  * This will preform the put request on this classes specified url
+  * \param req the reuqest to process
+  * \see getPutMultipartData()
+  * \return the reply that should be parsed
+  */
+ QNetworkReply * UbuntuOneRequest::doPutRequest(QNetworkRequest * req)
+ {
+     return _networkAccessManager->put(*req,getPostMultipartData());
+ }
+
+ /*!
+  * This will return the required mutlipart data only used in post methods
+  * \brief getPutMultipartData called from the put request
+  * \return NULL, or multipart data pointer
+  */
+ QHttpMultiPart * UbuntuOneRequest::getPutMultipartData() {
+    return NULL;
+ }
+
+ /*!
+  * This will preform the get request
+  * \param req a get request
+  * \return the reply object
+  */
+ QNetworkReply * UbuntuOneRequest::doGetRequest(QNetworkRequest * req) {
+    return _networkAccessManager->get(*req);
+ }
+
+ /*!
+  * Create a new QNetworkRequest, the default implementation will call {\ref addRequestHeader()}
+  * all the necessary headers.
+  *
+  * \return the created request, not NULL.
+  */
+ QNetworkRequest * UbuntuOneRequest::createRequest() {
+     QNetworkRequest * request = new QNetworkRequest(QUrl(getUrl()));
+
+     addRequestHeader(request);
+
+     return request;
+ }
+
+ /*!
+  * Adds the required headers to the specified request. Default implementation is
+  * a no-op.
+  *
+  * \brief addRequestHeader add all the neccessary headers
+  * \param req the request to add headers to
+  */
+ void UbuntuOneRequest::addRequestHeader(QNetworkRequest * req)
+ {
+    // No-op
  }

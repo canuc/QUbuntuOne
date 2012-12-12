@@ -1,7 +1,7 @@
 # Add more folders to ship with the application, here
-folder_01.source = qml/UbuntuCloud
-folder_01.target = qml
-DEPLOYMENTFOLDERS = folder_01
+folder_qml.source = qml/UbuntuCloud
+folder_qml.target = qml
+DEPLOYMENTFOLDERS = folder_qml
 
 # Additional import path used to resolve QML modules in Creator's code model
 QML_IMPORT_PATH =
@@ -26,8 +26,12 @@ symbian:TARGET.CAPABILITY += NetworkServices
 # Speed up launching on MeeGo/Harmattan when using applauncherd daemon
 CONFIG += qdeclarative-boostable
 
+DEFINES += KQOAUTH
+
 # Add dependency to Symbian components
 # CONFIG += qt-components
+
+
 
 SOURCES += src/main.cpp \
     src/net/networkmanager.cpp \
@@ -40,9 +44,16 @@ SOURCES += src/main.cpp \
     src/qjson/json_scanner.cpp \
     src/qjson/json_parser.cc \
     src/net/exception/qexception.cpp \
-    src/net/qubuntuonepostrequest.cpp \
     src/net/exception/invalidrequesttype.cpp \
-    src/net/requests/cookiepersistantubuntuonerequest.cpp
+    src/net/requests/cookiepersistantubuntuonerequest.cpp \
+    src/test/requesttest.cpp \
+    src/test/testwrangler.cpp \
+    src/kqoauth/kqoauthmanager.cpp \
+    src/kqoauth/kqoauthrequest.cpp \
+    src/kqoauth/kqoauthutils.cpp \
+    src/kqoauth/kqoauthauthreplyserver.cpp \
+    src/kqoauth/kqoauthrequest_1.cpp \
+    src/kqoauth/kqoauthrequest_xauth.cpp
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
@@ -80,6 +91,19 @@ HEADERS += \
     src/qjson/json_scanner.h \
     src/qjson/json_parser.hh \
     src/net/exception/qexception.h \
-    src/net/qubuntuonepostrequest.h \
     src/net/exception/invalidrequesttype.h \
-    src/net/requests/cookiepersistantubuntuonerequest.h
+    src/net/requests/cookiepersistantubuntuonerequest.h \
+    src/test/requesttest.h \
+    src/test/testwrangler.h \
+    src/test/test.h \
+    src/kqoauth/kqoauthmanager.h \
+    src/kqoauth/kqoauthrequest.h \
+    src/kqoauth/kqoauthrequest_1.h \
+    src/kqoauth/kqoauthrequest_xauth.h \
+    src/kqoauth/kqoauthglobals.h \
+    src/kqoauth/kqoauthrequest_p.h \
+    src/kqoauth/kqoauthmanager_p.h \
+    src/kqoauth/kqoauthauthreplyserver.h \
+    src/kqoauth/kqoauthauthreplyserver_p.h \
+    src/kqoauth/kqoauthutils.h \
+    src/kqoauth/kqoauthrequest_xauth_p.h
