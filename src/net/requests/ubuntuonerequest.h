@@ -35,6 +35,7 @@ namespace QUbuntuOne {
     class UbuntuOneRequest : public QObject, public QRunnable
     {
     Q_OBJECT
+
     public:
 
         typedef enum {
@@ -107,8 +108,10 @@ namespace QUbuntuOne {
           * \return the byte data
           */
           const QByteArray & getBytes() const;
-    protected:
 
+
+    protected:
+         virtual void processData(const QByteArray & bytes);
         /*!
          * Create a new QNetworkRequest, the default implementation will call {\ref addRequestHeader()}
          * all the necessary headers. The request will use the url retrieved by: {\ref getUrl}.
@@ -177,17 +180,18 @@ namespace QUbuntuOne {
          * The number of max retries that should be attempted with the data contained in this request.
          * something rational is the default value 3. The sequence number is a single request and not a
          * \brief getMaxRetries
-         * \return
+         * \return max number of retries that should be attempted for this object
          */
         const int getMaxRetries() const;
 
         /*!
-         * These are the the callback slots that will be called based on the status
+         * These are the the callback slots that will be called based on the status:
+         * The
          */
         virtual void processError(QNetworkReply::NetworkError code,QNetworkReply * reply);
         virtual void progressUpdatedDownload(qint64 bytes,qint64 bytesTotal, QNetworkReply * reply);
         virtual void progressUpdatedUpload(qint64 bytes, qint64 bytesTotal, QNetworkReply * reply);
-        virtual void requestFinnished(QNetworkReply * reply);
+        virtual void requestFinished(QNetworkReply * reply);
 
         /*!
          * This will run the request process and hook up the returned reply
@@ -221,9 +225,10 @@ namespace QUbuntuOne {
         RequestStatus _status;
         QMutex _mutex;
         QString _url;
-        QNetworkAccessManager * _networkAccessManager;
         int _currentRequest;
+        QScopedPointer<QNetworkAccessManager> _networkAccessManager;
         QByteArray _data;
+        Q_DISABLE_COPY(UbuntuOneRequest)
 
     signals:
         void statusChanged(RequestStatus status);
@@ -244,7 +249,7 @@ namespace QUbuntuOne {
         /*!
          * Slot should be called when the wrapped NetworkRequest is completed.
          * \brief finished The request has completed
-         * \see QNetworkReply::finnished()
+         * \see QNetworkReply::finished()
          */
         void finished();
     };

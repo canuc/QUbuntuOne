@@ -22,13 +22,14 @@
 #include "../exception/qexception.h"
 #include <QMutexLocker>
 #include "../exception/invalidrequesttype.h"
+#include <QtNetwork/QHttpMultiPart>
 
 using namespace QUbuntuOne;
 
 UbuntuOneRequest::UbuntuOneRequest(QString url,UbuntuOneRequest::RequestType type,QObject *parent) :
-    QObject(parent),_type(type),_url(url),_status(RequestStatusIncomplete),_currentRequest(0)
+    QObject(parent),_type(type),_url(url),_status(RequestStatusIncomplete),_currentRequest(0),_networkAccessManager(new QNetworkAccessManager(this))
 {
-    _networkAccessManager = new QNetworkAccessManager(this);
+
 }
 
 UbuntuOneRequest::~UbuntuOneRequest()
@@ -77,6 +78,7 @@ void UbuntuOneRequest::run ()
             throw new QException("Error with setting the request status!");
         }
 
+
         // Increment the sequence number
         _currentRequest++;
     }
@@ -120,7 +122,13 @@ QNetworkReply * UbuntuOneRequest::doRequest(QNetworkRequest * req)
         connect(reply,SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(errorRecieved(QNetworkReply::NetworkError)));
         connect(reply,SIGNAL(downloadProgress(qint64,qint64)),this,SLOT(downloadProgress(qint64,qint64)));
         connect(reply,SIGNAL(uploadProgress(qint64,qint64)), this,SLOT(uploadProgress(qint64,qint64)));
+
         connect(reply,SIGNAL(finished()),this,SLOT(finished()));
+        //
+        // To free up any memory that is associated with the request we are
+        // going to connect the finished slot to the deleteLater
+        //
+        connect(reply,SIGNAL(finished()),reply,SLOT(deleteLater()));
     } else {
         throw new InvalidRequestType();
     }
@@ -159,14 +167,14 @@ QNetworkReply * UbuntuOneRequest::doRequest(QNetworkRequest * req)
  }
 
  /*!
-  * signal finnished emitted.
+  * signal finished emitted.
   *
   * \brief UbuntuOneRequest::finished the request for the current request has completed
   */
  void UbuntuOneRequest::finished()
  {
     QNetworkReply * reply =  qobject_cast<QNetworkReply *>(sender());
-    requestFinnished(reply);
+    requestFinished(reply);
  }
 
  /*!
@@ -199,12 +207,12 @@ QNetworkReply * UbuntuOneRequest::doRequest(QNetworkRequest * req)
  }
 
  /*!
-  * Can be overloaded to provide functionality when the request finnishes
+  * Can be overloaded to provide functionality when the request finishes
   *
-  * \brief UbuntuOneRequest::requestFinnished request finnishes
+  * \brief UbuntuOneRequest::requestFinished request finishes
   * \param reply the corresponding reply object for this
   */
- void UbuntuOneRequest::requestFinnished(QNetworkReply * reply) {
+ void UbuntuOneRequest::requestFinished(QNetworkReply * reply) {
     setRequestStatus(RequestStatusSucess);
 
     _data = reply->readAll();
@@ -221,8 +229,10 @@ QNetworkReply * UbuntuOneRequest::doRequest(QNetworkRequest * req)
   * \see getMultipartData()
   * \return reply object
   */
- QNetworkReply * UbuntuOneRequest::doPostRequest(QNetworkRequest * req) {
-     return _networkAccessManager->post(*req,getPostMultipartData());
+ QNetworkReply * UbuntuOneRequest::doPostRequest(QNetworkRequest * req)
+ {
+     QScopedPointer<QHttpMultiPart> multipartData(getPostMultipartData());
+     return _networkAccessManager->post(*req,multipartData.data());
  }
 
  /*!
@@ -253,7 +263,8 @@ QNetworkReply * UbuntuOneRequest::doRequest(QNetworkRequest * req)
   */
  QNetworkReply * UbuntuOneRequest::doPutRequest(QNetworkRequest * req)
  {
-     return _networkAccessManager->put(*req,getPostMultipartData());
+    QScopedPointer<QHttpMultiPart> multipartData(getPutMultipartData());
+    return _networkAccessManager->put(*req,multipartData.data());
  }
 
  /*!
@@ -302,4 +313,8 @@ QNetworkReply * UbuntuOneRequest::doRequest(QNetworkRequest * req)
 
  const QByteArray & UbuntuOneRequest::getBytes() const  {
     return _data;
+ }
+
+ void UbuntuOneRequest::processData(const QByteArray & bytes) {
+     // no-op
  }

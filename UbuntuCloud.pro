@@ -53,7 +53,8 @@ SOURCES += src/main.cpp \
     src/kqoauth/kqoauthutils.cpp \
     src/kqoauth/kqoauthauthreplyserver.cpp \
     src/kqoauth/kqoauthrequest_1.cpp \
-    src/kqoauth/kqoauthrequest_xauth.cpp
+    src/kqoauth/kqoauthrequest_xauth.cpp \
+    src/net/requests/jsonubuntuonerequest.cpp
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
@@ -106,4 +107,5 @@ HEADERS += \
     src/kqoauth/kqoauthauthreplyserver.h \
     src/kqoauth/kqoauthauthreplyserver_p.h \
     src/kqoauth/kqoauthutils.h \
-    src/kqoauth/kqoauthrequest_xauth_p.h
+    src/kqoauth/kqoauthrequest_xauth_p.h \
+    src/net/requests/jsonubuntuonerequest.h
