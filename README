@@ -11,6 +11,7 @@ To run tests:
 
 `qmake QT+=testlib DEFINES+=UBUNTU_CLOUD_TEST`
 `make clean`
+`make`
 `./UbuntuCloud`
 
 Build
