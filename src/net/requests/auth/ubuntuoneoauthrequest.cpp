@@ -22,6 +22,7 @@
 #include <QtNetwork/QNetworkRequest>
 #include <QVariantMap>
 #include <QMap>
+#include <QDebug>
 using namespace QUbuntuOne;
 
 static const QString formatUbuntuOneOAuthRequestUrl(QString url,QString description)
@@ -39,9 +40,9 @@ UbuntuOneOAuthRequest::UbuntuOneOAuthRequest(QString username,QString password,Q
 
 void UbuntuOneOAuthRequest::addRequestHeader(QNetworkRequest *req)
 {
-    QString basicAuthString = QString("%s:%s").arg(_username,_password);
+    QString basicAuthString = QString("%1:%2").arg(_username,_password);
     req->setRawHeader(QString('Accept').toLatin1(),QString('application/json').toLatin1());
-    req->setRawHeader(QString("Authorization").toLatin1(),QString("Basic %s").arg(QString(basicAuthString.toLatin1().toBase64())).toLatin1());
+    req->setRawHeader(QString("Authorization").toLatin1(),QString("Basic %1").arg(QString(basicAuthString.toLatin1().toBase64())).toLatin1());
 }
 
 void UbuntuOneOAuthRequest::processData(const QByteArray &bytes)
@@ -51,7 +52,7 @@ void UbuntuOneOAuthRequest::processData(const QByteArray &bytes)
 
     QMap<QString,QVariant>::Iterator tokenIt = map.find("token");
     QMap<QString,QVariant>::Iterator secretTokenIt = map.find("token_secret");
-
+    qDebug() << bytes;
     if ( tokenIt != map.end() && secretTokenIt != map.end() ) {
         _resultantSecretToken = tokenIt->toString();
         _resultantToken = tokenIt->toString();
