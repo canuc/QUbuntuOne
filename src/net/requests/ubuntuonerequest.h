@@ -32,7 +32,8 @@ namespace QUbuntuOne {
       * The base atom for a request that can be inherited to create a
       * new item
       */
-    class UbuntuOneRequest : public QObject, public QRunnable
+    class
+            UbuntuOneRequest : public QObject, public QRunnable
     {
     Q_OBJECT
 

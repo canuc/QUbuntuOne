@@ -28,7 +28,7 @@
 using namespace QUbuntuOne;
 
 UbuntuOneRequest::UbuntuOneRequest(QString url,UbuntuOneRequest::RequestType type,QObject *parent) :
-    QObject(parent),_type(type),_url(url),_status(RequestStatusIncomplete),_currentRequest(0),_networkAccessManager(new QNetworkAccessManager(this))
+    QObject(parent),_type(type),_status(RequestStatusIncomplete),_url(url),_currentRequest(0),_networkAccessManager(new QNetworkAccessManager(this))
 {
 
 }

@@ -18,35 +18,31 @@
  *  <http://www.gnu.org/licenses/>.
  */
 
-#include "testwrangler.h"
+#ifndef TESTOAUTH_H
+#define TESTOAUTH_H
 
-#include <QtTest/QTest>
-#include "requesttest.h"
-#include "src/test/testoauth.h"
-TestWrangler::TestWrangler(QCoreApplication *parent) :
-    QObject(parent)
+#include <QObject>
+#include <QSharedPointer>
+#include "src/kqoauth/kqoauthmanager.h"
+class testOAuth : public QObject
 {
-    addTest(new RequestTest(this));
-    addTest(new testOAuth(this) );
-}
+    Q_OBJECT
+public:
+    explicit testOAuth(QObject *parent = 0);
+private:
+    const QString username;
+    const QString password;
+    const QString consumerKey;
+    const QString consumerKeyPriv;
+    QSharedPointer<KQOAuthManager> _authManager;
+signals:
+    
+public slots:
 
-TestWrangler::~TestWrangler()
-{
-    return;
-}
+private slots:
+    void initTestCase();
+    void testOAuthLogin();
+    void cleanupTestCase();
+};
 
-void TestWrangler::runTests() {
-    int numberOfTests = testList.count();
-
-    for ( int i =0; i < numberOfTests; i++ ) {
-        QObject * currentTest = testList.at(i);
-        QTest::qExec(currentTest);
-    }
-
-    return;
-}
-
-void TestWrangler::addTest(QObject * testObject)
-{
-    testList.append(testObject);
-}
+#endif // TESTOAUTH_H

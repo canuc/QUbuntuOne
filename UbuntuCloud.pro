@@ -17,7 +17,7 @@ symbian:TARGET.UID3 = 0xE75557A8
 
 # Allow network access on Symbian
 symbian:TARGET.CAPABILITY += NetworkServices
-
+QT+=testlib
 # If your application uses the Qt Mobility libraries, uncomment the following
 # lines and add the respective components to the MOBILITY variable.
 # CONFIG += mobility
@@ -54,7 +54,9 @@ SOURCES += src/main.cpp \
     src/kqoauth/kqoauthauthreplyserver.cpp \
     src/kqoauth/kqoauthrequest_1.cpp \
     src/kqoauth/kqoauthrequest_xauth.cpp \
-    src/net/requests/jsonubuntuonerequest.cpp
+    src/net/requests/jsonubuntuonerequest.cpp \
+    src/test/testoauth.cpp \
+    src/net/requests/auth/ubuntuoneoauthrequest.cpp
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
@@ -108,4 +110,7 @@ HEADERS += \
     src/kqoauth/kqoauthauthreplyserver_p.h \
     src/kqoauth/kqoauthutils.h \
     src/kqoauth/kqoauthrequest_xauth_p.h \
-    src/net/requests/jsonubuntuonerequest.h
+    src/net/requests/jsonubuntuonerequest.h \
+    src/net/macros.h \
+    src/test/testoauth.h \
+    src/net/requests/auth/ubuntuoneoauthrequest.h
