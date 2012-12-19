@@ -27,7 +27,7 @@ using namespace QUbuntuOne;
 
 static const QString formatUbuntuOneOAuthRequestUrl(QString url,QString description)
 {
-    return QString(url) + QString("ws.op").toLatin1().toBase64() + QString("=") + QString ("authenticate") + QString("token_name") + QString("=") + QString("Ubuntu One @ "+description).toLatin1().toBase64();
+    return QString(url) + QString("ws.op").toLatin1() + QString("=") + QString ("authenticate") + QString("&token_name") + QString("=") + QString("Ubuntu One @ "+description).toLatin1().toBase64();
 }
 
 UbuntuOneOAuthRequest::UbuntuOneOAuthRequest(QString username,QString password,QObject *parent) :
@@ -53,6 +53,7 @@ void UbuntuOneOAuthRequest::processData(const QByteArray &bytes)
     QMap<QString,QVariant>::Iterator tokenIt = map.find("token");
     QMap<QString,QVariant>::Iterator secretTokenIt = map.find("token_secret");
     qDebug() << bytes;
+    qDebug() << "URL: " << getUrl();
     if ( tokenIt != map.end() && secretTokenIt != map.end() ) {
         _resultantSecretToken = tokenIt->toString();
         _resultantToken = tokenIt->toString();
